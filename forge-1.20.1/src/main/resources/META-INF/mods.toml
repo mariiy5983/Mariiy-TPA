@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+issueTrackerURL="https://github.com/Mariiy/Mariiy-TPA/issues"
+
+[[mods]]
+modId="mariiy_tpa"
+version="${version}"
+displayName="Mariiy-TPA"
+authors="Mariiy"
+description='''Lightweight open-source TPA (Forge 1.20.1–1.20.4).'''
+displayURL="https://github.com/Mariiy/Mariiy-TPA"
+
+[[dependencies.mariiy_tpa]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.mariiy_tpa]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.5)"
+ordering="NONE"
+side="BOTH"

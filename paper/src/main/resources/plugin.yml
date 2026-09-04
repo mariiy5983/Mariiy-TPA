@@ -1,0 +1,43 @@
+name: Mariiy-TPA
+version: '${version}'
+main: com.mariiy.tpa.paper.MariiyTpaPlugin
+api-version: '1.16'
+description: Lightweight open-source TPA (Paper 1.20–26.2 one jar; clickable chat).
+author: Mariiy
+website: https://github.com/Mariiy/Mariiy-TPA
+folia-supported: false
+
+commands:
+  tpa:
+    description: Request to teleport to a player
+    usage: /tpa <player>
+    permission: mariiytpa.use
+  tpahere:
+    description: Request a player to teleport to you
+    usage: /tpahere <player>
+    permission: mariiytpa.use
+  tpacancel:
+    description: Cancel your outgoing TPA request
+    usage: /tpacancel
+    permission: mariiytpa.use
+  tpaccept:
+    description: Accept a TPA request
+    usage: /tpaccept
+    aliases: [tpyes]
+    permission: mariiytpa.use
+  tpdeny:
+    description: Deny a TPA request
+    usage: /tpdeny
+    aliases: [tpno]
+    permission: mariiytpa.use
+
+permissions:
+  mariiytpa.use:
+    description: Use TPA commands
+    default: true
+  mariiytpa.bypass:
+    description: Bypass TPA cooldown
+    default: op
+  mariiytpa.reload:
+    description: Reload Mariiy-TPA config
+    default: op

@@ -1,0 +1,43 @@
+# Build
+.gradle/
+build/
+**/build/
+out/
+bin/
+run/
+runs/
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Minecraft / Loom / ForgeGradle
+**/run/
+**/runs/
+**/logs/
+**/crash-reports/
+**/mods/
+**/config/
+**/world/
+**/worlds/
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+remap*
+.architectury-transformer/
+classpath.txt
+
+# OS / secrets
+.env
+.env.*
+*.key
+*.pem
+build-*.txt 
+

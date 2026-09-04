@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "mariiy-tpa",
+  "version": "${version}",
+  "name": "Mariiy-TPA",
+  "description": "Lightweight open-source TPA (Fabric 1.21.x).",
+  "authors": ["Mariiy"],
+  "contact": {
+    "homepage": "https://github.com/Mariiy/Mariiy-TPA",
+    "sources": "https://github.com/Mariiy/Mariiy-TPA"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.mariiy.tpa.fabric.MariiyTpaFabric"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=1.21 <=1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

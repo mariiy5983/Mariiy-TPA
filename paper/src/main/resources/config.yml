@@ -1,0 +1,7 @@
+enabled: true
+timeout-seconds: 60
+cooldown-seconds: 15
+separator: "-------------------------------------------------"
+# Leave empty to use each player's Minecraft language (lang files).
+# Set a fixed string to force the same prefix for everyone.
+prefix: ""
