@@ -29,34 +29,28 @@
 - 接受後立即傳送（無 3 秒等待／移動取消）
 - 請求逾時、冷卻、離線自動清理
 
-## 平台支援
+## 平台支援／下載指南
 
-### Paper（單一 jar）
+### Paper／Purpur／Spigot（1.20 → 26.2 同一顆）
+
+| 伺服器版本 | 下載 |
+|------------|------|
+| 1.20 – 1.20.6 | `Mariiy-TPA-paper-mc1.20-26.2-*.jar` → `plugins/` |
+| 1.21 – 1.21.x | **同上** |
+| **26.1／26.2** | **同上** |
+
+### Fabric／NeoForge／Forge（多檔案）
 
 | 模組 | 遊戲版本 | 產物 |
 |------|----------|------|
-| `paper` | **1.20 – 26.2** | `Mariiy-TPA-paper-*.jar` → `plugins/` |
+| `fabric-1.20.1` | 1.20.1 – 1.20.4 | `Mariiy-TPA-fabric-1.20-*.jar` |
+| `fabric-1.21.1` | 1.21 – 1.21.1 | `Mariiy-TPA-fabric-1.21-*.jar` |
+| `neoforge-1.21.1` | 1.21 – 1.21.1 | `Mariiy-TPA-neoforge-1.21-*.jar` |
+| `forge-1.20.1` / `forge-1.21.1` | 見各模組 README | 需 Gradle 8 建置 |
 
-### 模組（多檔案，依版本選一顆）
+**26.1／26.2 的 Fabric／NeoForge**：遊戲已去混淆，需新 Loom／官方 mappings，**1.0.0 尚未收錄**；該版本線請先用 Paper，或等後續 release。
 
-| 模組 | 遊戲版本 | 產物 |
-|------|----------|------|
-| `fabric-1.20.1` | **1.20.1 – 1.20.4** | `Mariiy-TPA-fabric-1.20-*.jar` → `mods/` |
-| `fabric-1.21.1` | **1.21 – 1.21.1** | `Mariiy-TPA-fabric-1.21-*.jar` → `mods/` |
-| `neoforge-1.20.1` | **1.20.1 – 1.20.4** | `Mariiy-TPA-neoforge-1.20-*.jar` → `mods/` |
-| `neoforge-1.21.1` | **1.21 – 1.21.1** | `Mariiy-TPA-neoforge-1.21-*.jar` → `mods/` |
-| `forge-1.20.1` | **1.20.1 – 1.20.4** | `Mariiy-TPA-forge-1.20-*.jar` → `mods/` |
-| `forge-1.21.1` | **1.21 – 1.21.1** | `Mariiy-TPA-forge-1.21-*.jar` → `mods/` |
-
-\* Folia：目前未標 `folia-supported`。  
-\* Paper「26.x」對應新版 Purpur／Paper 版號；模組端仍用原版 **1.20／1.21** 編號。
-
-### 選檔方式
-
-| 需求 | 用哪個 |
-|------|--------|
-| Paper／Purpur 1.20～26.2 | **一顆** `Mariiy-TPA-paper` |
-| Fabric／NeoForge／Forge | 依伺服器 MC 版本選 **1.20** 或 **1.21** 那顆 |
+\* Folia：目前未標 `folia-supported`。
 
 ## 建置
 

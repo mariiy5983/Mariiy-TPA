@@ -23,7 +23,7 @@ tasks {
     }
 
     shadowJar {
-        archiveBaseName.set("Mariiy-TPA-paper")
+        archiveBaseName.set("Mariiy-TPA-paper-mc1.20-26.2")
         archiveClassifier.set("")
         mergeServiceFiles()
     }
