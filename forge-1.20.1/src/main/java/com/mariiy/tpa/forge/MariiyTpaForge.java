@@ -1,5 +1,6 @@
 package com.mariiy.tpa.forge;
 
+import com.mariiy.tpa.BackService;
 import com.mariiy.tpa.TpaKind;
 import com.mariiy.tpa.TpaService;
 import com.mariiy.tpa.TpaSettings;
@@ -8,6 +9,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -22,16 +24,20 @@ public final class MariiyTpaForge {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     private static TpaService service;
+    private static BackService backService;
     private static ForgeTpaPlatform platform;
 
     public MariiyTpaForge() {
         TpaSettings settings = new TpaSettings();
         platform = new ForgeTpaPlatform(settings);
         service = new TpaService(platform, settings);
+        backService = new BackService(platform);
+        platform.setBackService(backService);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStopped);
         MinecraftForge.EVENT_BUS.addListener(this::onCommands);
         MinecraftForge.EVENT_BUS.addListener(this::onLogout);
+        MinecraftForge.EVENT_BUS.addListener(this::onDeath);
         LOGGER.info("Mariiy-TPA (Forge) loaded.");
     }
 
@@ -46,6 +52,12 @@ public final class MariiyTpaForge {
     private void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer sp) {
             service.clearPlayer(sp.getUUID());
+        }
+    }
+
+    private void onDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer sp) {
+            backService.remember(sp.getUUID(), platform.captureLocation(sp.getUUID()));
         }
     }
 
@@ -107,6 +119,12 @@ public final class MariiyTpaForge {
             ServerPlayer p = ctx.getSource().getPlayer();
             if (p == null) return 0;
             service.deny(p.getUUID());
+            return 1;
+        }));
+        d.register(Commands.literal("back").executes(ctx -> {
+            ServerPlayer p = ctx.getSource().getPlayer();
+            if (p == null) return 0;
+            backService.back(p.getUUID());
             return 1;
         }));
     }

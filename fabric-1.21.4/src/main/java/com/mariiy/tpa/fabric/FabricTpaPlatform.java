@@ -162,7 +162,7 @@ public final class FabricTpaPlatform implements TpaPlatform {
             remember(from);
             Vec3d dest = near(target);
             requester.teleport(target.getServerWorld(), dest.x, dest.y, dest.z,
-                    Set.of(), target.getYaw(), target.getPitch());
+                    Set.of(), target.getYaw(), target.getPitch(), false);
             sendSuccess(from, TpaKeys.SUCCESS_TELEPORTED_TO, target.getGameProfile().getName());
             sendSuccess(to, TpaKeys.SUCCESS_ARRIVED_HERE, requester.getGameProfile().getName());
             play(requester, SoundEvents.ENTITY_ENDERMAN_TELEPORT);
@@ -170,7 +170,7 @@ public final class FabricTpaPlatform implements TpaPlatform {
             remember(to);
             Vec3d dest = near(requester);
             target.teleport(requester.getServerWorld(), dest.x, dest.y, dest.z,
-                    Set.of(), requester.getYaw(), requester.getPitch());
+                    Set.of(), requester.getYaw(), requester.getPitch(), false);
             sendSuccess(to, TpaKeys.SUCCESS_TELEPORTED_HERE, requester.getGameProfile().getName());
             sendSuccess(from, TpaKeys.SUCCESS_ARRIVED_TO_YOU, target.getGameProfile().getName());
             play(target, SoundEvents.ENTITY_ENDERMAN_TELEPORT);
@@ -203,7 +203,7 @@ public final class FabricTpaPlatform implements TpaPlatform {
             return false;
         }
         p.teleport(world, location.x(), location.y(), location.z(),
-                Set.of(), location.yaw(), location.pitch());
+                Set.of(), location.yaw(), location.pitch(), false);
         return true;
     }
 

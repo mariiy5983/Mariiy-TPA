@@ -3,7 +3,7 @@
   "id": "mariiy-tpa",
   "version": "${version}",
   "name": "Mariiy-TPA",
-  "description": "Lightweight open-source TPA (Fabric 1.20.1–1.20.4).",
+  "description": "TPA + /back for Fabric 1.20.1–1.20.4.",
   "authors": ["Mariiy"],
   "contact": {
     "homepage": "https://github.com/Mariiy/Mariiy-TPA",

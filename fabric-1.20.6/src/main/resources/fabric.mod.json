@@ -3,7 +3,7 @@
   "id": "mariiy-tpa",
   "version": "${version}",
   "name": "Mariiy-TPA",
-  "description": "TPA + /back for Fabric 1.21–1.21.1.",
+  "description": "TPA + /back for Fabric 1.20.5–1.20.6.",
   "authors": ["Mariiy"],
   "contact": {
     "homepage": "https://github.com/mariiy5983/Mariiy-TPA",
@@ -15,8 +15,8 @@
     "main": ["com.mariiy.tpa.fabric.MariiyTpaFabric"]
   },
   "depends": {
-    "fabricloader": ">=0.16.0",
-    "minecraft": ">=1.21 <=1.21.1",
+    "fabricloader": ">=0.15.0",
+    "minecraft": ">=1.20.5 <=1.20.6",
     "java": ">=21",
     "fabric-api": "*"
   }

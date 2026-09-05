@@ -33,5 +33,8 @@
   "mariiy_tpa.cmd.no_permission": "沒有權限。",
   "mariiy_tpa.cmd.usage_tpa": "用法：/tpa <玩家>",
   "mariiy_tpa.cmd.usage_tpahere": "用法：/tpahere <玩家>",
-  "mariiy_tpa.cmd.not_online": "玩家不在線上：{0}"
+  "mariiy_tpa.cmd.not_online": "玩家不在線上：{0}",
+  "mariiy_tpa.back.none": "沒有可返回的位置。",
+  "mariiy_tpa.back.failed": "無法返回該位置（世界可能不存在）。",
+  "mariiy_tpa.back.success": "已返回上一個位置。"
 }

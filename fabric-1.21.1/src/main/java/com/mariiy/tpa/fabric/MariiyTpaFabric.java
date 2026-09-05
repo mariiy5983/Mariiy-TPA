@@ -1,11 +1,13 @@
 package com.mariiy.tpa.fabric;
 
+import com.mariiy.tpa.BackService;
 import com.mariiy.tpa.TpaKind;
 import com.mariiy.tpa.TpaService;
 import com.mariiy.tpa.TpaSettings;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
@@ -21,6 +23,7 @@ public final class MariiyTpaFabric implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     private static TpaService service;
+    private static BackService backService;
     private static FabricTpaPlatform platform;
 
     @Override
@@ -28,12 +31,20 @@ public final class MariiyTpaFabric implements ModInitializer {
         TpaSettings settings = new TpaSettings();
         platform = new FabricTpaPlatform(settings);
         service = new TpaService(platform, settings);
+        backService = new BackService(platform);
+        platform.setBackService(backService);
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> platform.setServer(server));
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> platform.setServer(null));
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
                 service.clearPlayer(handler.getPlayer().getUuid()));
+
+        ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
+            if (entity instanceof ServerPlayerEntity sp) {
+                backService.remember(sp.getUuid(), platform.captureLocation(sp.getUuid()));
+            }
+        });
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("tpa")
@@ -101,6 +112,13 @@ public final class MariiyTpaFabric implements ModInitializer {
                         ServerPlayerEntity p = ctx.getSource().getPlayer();
                         if (p == null) return 0;
                         service.deny(p.getUuid());
+                        return 1;
+                    }));
+            dispatcher.register(CommandManager.literal("back")
+                    .executes(ctx -> {
+                        ServerPlayerEntity p = ctx.getSource().getPlayer();
+                        if (p == null) return 0;
+                        backService.back(p.getUuid());
                         return 1;
                     }));
         });

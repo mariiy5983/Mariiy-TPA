@@ -1,5 +1,6 @@
 package com.mariiy.tpa.neoforge;
 
+import com.mariiy.tpa.BackService;
 import com.mariiy.tpa.TpaKind;
 import com.mariiy.tpa.TpaService;
 import com.mariiy.tpa.TpaSettings;
@@ -10,6 +11,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -23,17 +25,21 @@ public final class MariiyTpaNeoForge {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     private static TpaService service;
+    private static BackService backService;
     private static NeoForgeTpaPlatform platform;
 
     public MariiyTpaNeoForge(IEventBus modBus) {
         TpaSettings settings = new TpaSettings();
         platform = new NeoForgeTpaPlatform(settings);
         service = new TpaService(platform, settings);
+        backService = new BackService(platform);
+        platform.setBackService(backService);
 
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         NeoForge.EVENT_BUS.addListener(this::onServerStopped);
         NeoForge.EVENT_BUS.addListener(this::onCommands);
         NeoForge.EVENT_BUS.addListener(this::onLogout);
+        NeoForge.EVENT_BUS.addListener(this::onDeath);
         LOGGER.info("Mariiy-TPA (NeoForge) loaded.");
     }
 
@@ -48,6 +54,12 @@ public final class MariiyTpaNeoForge {
     private void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer sp) {
             service.clearPlayer(sp.getUUID());
+        }
+    }
+
+    private void onDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer sp) {
+            backService.remember(sp.getUUID(), platform.captureLocation(sp.getUUID()));
         }
     }
 
@@ -109,6 +121,12 @@ public final class MariiyTpaNeoForge {
             ServerPlayer p = ctx.getSource().getPlayer();
             if (p == null) return 0;
             service.deny(p.getUUID());
+            return 1;
+        }));
+        d.register(Commands.literal("back").executes(ctx -> {
+            ServerPlayer p = ctx.getSource().getPlayer();
+            if (p == null) return 0;
+            backService.back(p.getUUID());
             return 1;
         }));
     }

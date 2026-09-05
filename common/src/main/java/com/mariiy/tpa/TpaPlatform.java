@@ -46,12 +46,22 @@ public interface TpaPlatform {
      */
     void sendInvite(java.util.UUID target, String fromName, TpaKind kind, int timeoutSeconds);
 
-    /** Teleport immediately: TO = from→to, HERE = to→from. */
+    /** Teleport immediately: TO = from→to, HERE = to→from. Should save /back points. */
     void teleport(java.util.UUID from, java.util.UUID to, TpaKind kind);
+
+    /** Snapshot of the player's current position, or null if offline / invalid. */
+    StoredLocation captureLocation(java.util.UUID player);
+
+    /** Teleport player to a previously stored location. */
+    boolean teleportTo(java.util.UUID player, StoredLocation location);
 
     void playRequestSound(java.util.UUID target);
 
     void playDenySound(java.util.UUID requester);
+
+    default void playBackSound(java.util.UUID player) {
+        playRequestSound(player);
+    }
 
     /** Resolve a message for this player's locale (optional override prefix handled by impl). */
     default String tr(java.util.UUID player, String key, Object... args) {

@@ -1,5 +1,6 @@
 package com.mariiy.tpa.paper;
 
+import com.mariiy.tpa.BackService;
 import com.mariiy.tpa.TpaService;
 import com.mariiy.tpa.TpaSettings;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,6 +10,7 @@ import java.util.Objects;
 public final class MariiyTpaPlugin extends JavaPlugin {
 
     private TpaService service;
+    private BackService backService;
     private PaperTpaPlatform platform;
 
     @Override
@@ -17,14 +19,16 @@ public final class MariiyTpaPlugin extends JavaPlugin {
         TpaSettings settings = loadSettings();
         platform = new PaperTpaPlatform(this, settings);
         service = new TpaService(platform, settings);
+        backService = new BackService(platform);
+        platform.setBackService(backService);
 
-        TpaCommand cmd = new TpaCommand(service);
-        for (String name : new String[]{"tpa", "tpahere", "tpacancel", "tpaccept", "tpdeny"}) {
+        TpaCommand cmd = new TpaCommand(service, backService);
+        for (String name : new String[]{"tpa", "tpahere", "tpacancel", "tpaccept", "tpdeny", "back"}) {
             Objects.requireNonNull(getCommand(name)).setExecutor(cmd);
             Objects.requireNonNull(getCommand(name)).setTabCompleter(cmd);
         }
-        getServer().getPluginManager().registerEvents(new TpaListener(service), this);
-        getLogger().info("Mariiy-TPA enabled (Paper).");
+        getServer().getPluginManager().registerEvents(new TpaListener(service, backService, platform), this);
+        getLogger().info("Mariiy-TPA 1.1.0 enabled (Bukkit/Spigot/Paper 1.20–26.2).");
     }
 
     @Override
@@ -54,5 +58,9 @@ public final class MariiyTpaPlugin extends JavaPlugin {
 
     public TpaService service() {
         return service;
+    }
+
+    public BackService backService() {
+        return backService;
     }
 }

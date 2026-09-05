@@ -1,5 +1,7 @@
 package com.mariiy.tpa.paper;
 
+import com.mariiy.tpa.BackService;
+import com.mariiy.tpa.StoredLocation;
 import com.mariiy.tpa.TpaI18n;
 import com.mariiy.tpa.TpaKeys;
 import com.mariiy.tpa.TpaKind;
@@ -15,6 +17,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -25,10 +28,15 @@ public final class PaperTpaPlatform implements TpaPlatform {
 
     private final MariiyTpaPlugin plugin;
     private final TpaSettings settings;
+    private BackService backService;
 
     public PaperTpaPlatform(MariiyTpaPlugin plugin, TpaSettings settings) {
         this.plugin = plugin;
         this.settings = settings;
+    }
+
+    public void setBackService(BackService backService) {
+        this.backService = backService;
     }
 
     @Override
@@ -159,16 +167,44 @@ public final class PaperTpaPlatform implements TpaPlatform {
             return;
         }
         if (kind == TpaKind.TO) {
+            remember(requester);
             requester.teleport(safeNear(target.getLocation()));
             sendSuccess(from, TpaKeys.SUCCESS_TELEPORTED_TO, target.getName());
             sendSuccess(to, TpaKeys.SUCCESS_ARRIVED_HERE, requester.getName());
             play(requester, Sound.ENTITY_ENDERMAN_TELEPORT);
         } else {
+            remember(target);
             target.teleport(safeNear(requester.getLocation()));
             sendSuccess(to, TpaKeys.SUCCESS_TELEPORTED_HERE, requester.getName());
             sendSuccess(from, TpaKeys.SUCCESS_ARRIVED_TO_YOU, target.getName());
             play(target, Sound.ENTITY_ENDERMAN_TELEPORT);
         }
+    }
+
+    @Override
+    public StoredLocation captureLocation(UUID player) {
+        Player p = Bukkit.getPlayer(player);
+        if (p == null || p.getWorld() == null) {
+            return null;
+        }
+        Location loc = p.getLocation();
+        return new StoredLocation(p.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(),
+                loc.getYaw(), loc.getPitch());
+    }
+
+    @Override
+    public boolean teleportTo(UUID player, StoredLocation location) {
+        Player p = Bukkit.getPlayer(player);
+        if (p == null || location == null) {
+            return false;
+        }
+        World world = Bukkit.getWorld(location.worldKey());
+        if (world == null) {
+            return false;
+        }
+        Location dest = new Location(world, location.x(), location.y(), location.z(),
+                location.yaw(), location.pitch());
+        return p.teleport(dest);
     }
 
     @Override
@@ -184,6 +220,12 @@ public final class PaperTpaPlatform implements TpaPlatform {
         Player p = Bukkit.getPlayer(requester);
         if (p != null) {
             play(p, Sound.ENTITY_VILLAGER_NO);
+        }
+    }
+
+    private void remember(Player player) {
+        if (backService != null) {
+            backService.rememberCurrent(player.getUniqueId());
         }
     }
 

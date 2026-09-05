@@ -33,5 +33,8 @@
   "mariiy_tpa.cmd.no_permission": "No permission.",
   "mariiy_tpa.cmd.usage_tpa": "Usage: /tpa <player>",
   "mariiy_tpa.cmd.usage_tpahere": "Usage: /tpahere <player>",
-  "mariiy_tpa.cmd.not_online": "Player not online: {0}"
+  "mariiy_tpa.cmd.not_online": "Player not online: {0}",
+  "mariiy_tpa.back.none": "You have no previous location to return to.",
+  "mariiy_tpa.back.failed": "Could not return to that location (world missing?).",
+  "mariiy_tpa.back.success": "Returned to your previous location."
 }

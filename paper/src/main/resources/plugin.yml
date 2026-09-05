@@ -2,9 +2,9 @@ name: Mariiy-TPA
 version: '${version}'
 main: com.mariiy.tpa.paper.MariiyTpaPlugin
 api-version: '1.16'
-description: Lightweight open-source TPA (Paper 1.20–26.2 one jar; clickable chat).
+description: Lightweight TPA + /back for Bukkit/Spigot/Paper 1.20–26.2.
 author: Mariiy
-website: https://github.com/Mariiy/Mariiy-TPA
+website: https://github.com/mariiy5983/Mariiy-TPA
 folia-supported: false
 
 commands:
@@ -30,10 +30,17 @@ commands:
     usage: /tpdeny
     aliases: [tpno]
     permission: mariiytpa.use
+  back:
+    description: Return to your previous teleport or death location
+    usage: /back
+    permission: mariiytpa.back
 
 permissions:
   mariiytpa.use:
     description: Use TPA commands
+    default: true
+  mariiytpa.back:
+    description: Use /back
     default: true
   mariiytpa.bypass:
     description: Bypass TPA cooldown

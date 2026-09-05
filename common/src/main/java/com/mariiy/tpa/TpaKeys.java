@@ -45,6 +45,10 @@ public final class TpaKeys {
     public static final String CMD_USAGE_TPAHERE = "mariiy_tpa.cmd.usage_tpahere";
     public static final String CMD_NOT_ONLINE = "mariiy_tpa.cmd.not_online";
 
+    public static final String BACK_NONE = "mariiy_tpa.back.none";
+    public static final String BACK_FAILED = "mariiy_tpa.back.failed";
+    public static final String BACK_SUCCESS = "mariiy_tpa.back.success";
+
     private TpaKeys() {
     }
 

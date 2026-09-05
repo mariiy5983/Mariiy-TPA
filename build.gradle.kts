@@ -17,7 +17,8 @@ subprojects {
     // Paper + MC 1.20.x loaders: Java 17 bytecode. MC 1.21.x loaders: Java 21.
     val javaRelease = when {
         name == "common" || name == "paper" -> 17
-        name.contains("1.20") -> 17
+        name.contains("1.20.1") -> 17
+        name.contains("1.20") -> 21 // 1.20.5+
         else -> 21
     }
 
@@ -40,9 +41,14 @@ tasks.register("buildPaper") {
 }
 
 tasks.register("buildFabric") {
-    dependsOn(":fabric-1.20.1:remapJar", ":fabric-1.21.1:remapJar")
+    dependsOn(
+        ":fabric-1.20.1:remapJar",
+        ":fabric-1.20.6:remapJar",
+        ":fabric-1.21.1:remapJar",
+        ":fabric-1.21.4:remapJar"
+    )
     group = "build"
-    description = "Build Fabric jars for 1.20.x and 1.21.x"
+    description = "Build Fabric jars (1.20.1 / 1.20.6 / 1.21.1 / 1.21.4)"
 }
 
 tasks.register("buildNeoForge") {

@@ -1,5 +1,7 @@
 package com.mariiy.tpa.neoforge;
 
+import com.mariiy.tpa.BackService;
+import com.mariiy.tpa.StoredLocation;
 import com.mariiy.tpa.TpaI18n;
 import com.mariiy.tpa.TpaKeys;
 import com.mariiy.tpa.TpaKind;
@@ -10,11 +12,16 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.TickEvent;
 
@@ -28,11 +35,16 @@ public final class NeoForgeTpaPlatform implements TpaPlatform {
 
     private final TpaSettings settings;
     private volatile MinecraftServer server;
+    private BackService backService;
     private final Map<UUID, Task> tasks = new ConcurrentHashMap<>();
     private boolean tickHooked;
 
     public NeoForgeTpaPlatform(TpaSettings settings) {
         this.settings = settings;
+    }
+
+    public void setBackService(BackService backService) {
+        this.backService = backService;
     }
 
     public void setServer(MinecraftServer server) {
@@ -194,6 +206,7 @@ public final class NeoForgeTpaPlatform implements TpaPlatform {
             return;
         }
         if (kind == TpaKind.TO) {
+            remember(from);
             Vec3 dest = near(target);
             requester.teleportTo(target.serverLevel(), dest.x, dest.y, dest.z, Set.of(),
                     target.getYRot(), target.getXRot());
@@ -201,6 +214,7 @@ public final class NeoForgeTpaPlatform implements TpaPlatform {
             sendSuccess(to, TpaKeys.SUCCESS_ARRIVED_HERE, requester.getGameProfile().getName());
             play(requester, SoundEvents.ENDERMAN_TELEPORT);
         } else {
+            remember(to);
             Vec3 dest = near(requester);
             target.teleportTo(requester.serverLevel(), dest.x, dest.y, dest.z, Set.of(),
                     requester.getYRot(), requester.getXRot());
@@ -208,6 +222,39 @@ public final class NeoForgeTpaPlatform implements TpaPlatform {
             sendSuccess(from, TpaKeys.SUCCESS_ARRIVED_TO_YOU, target.getGameProfile().getName());
             play(target, SoundEvents.ENDERMAN_TELEPORT);
         }
+    }
+
+    @Override
+    public StoredLocation captureLocation(UUID player) {
+        ServerPlayer p = player(player);
+        if (p == null) {
+            return null;
+        }
+        return new StoredLocation(
+                p.serverLevel().dimension().location().toString(),
+                p.getX(), p.getY(), p.getZ(),
+                p.getYRot(), p.getXRot());
+    }
+
+    @Override
+    public boolean teleportTo(UUID player, StoredLocation location) {
+        ServerPlayer p = player(player);
+        MinecraftServer s = server;
+        if (p == null || location == null || s == null) {
+            return false;
+        }
+        ResourceLocation id = ResourceLocation.tryParse(location.worldKey());
+        if (id == null) {
+            return false;
+        }
+        ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, id);
+        ServerLevel world = s.getLevel(key);
+        if (world == null) {
+            return false;
+        }
+        p.teleportTo(world, location.x(), location.y(), location.z(), Set.of(),
+                location.yaw(), location.pitch());
+        return true;
     }
 
     @Override
@@ -223,6 +270,12 @@ public final class NeoForgeTpaPlatform implements TpaPlatform {
         ServerPlayer p = player(requester);
         if (p != null) {
             play(p, SoundEvents.VILLAGER_NO);
+        }
+    }
+
+    private void remember(UUID player) {
+        if (backService != null) {
+            backService.rememberCurrent(player);
         }
     }
 

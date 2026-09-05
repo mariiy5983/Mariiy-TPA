@@ -1,5 +1,6 @@
 package com.mariiy.tpa.paper;
 
+import com.mariiy.tpa.BackService;
 import com.mariiy.tpa.TpaKind;
 import com.mariiy.tpa.TpaKeys;
 import com.mariiy.tpa.TpaService;
@@ -19,9 +20,11 @@ import java.util.stream.Collectors;
 public final class TpaCommand implements CommandExecutor, TabCompleter {
 
     private final TpaService service;
+    private final BackService backService;
 
-    public TpaCommand(TpaService service) {
+    public TpaCommand(TpaService service, BackService backService) {
         this.service = service;
+        this.backService = backService;
     }
 
     @Override
@@ -30,11 +33,19 @@ public final class TpaCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(com.mariiy.tpa.TpaI18n.translate("en_us", TpaKeys.CMD_PLAYERS_ONLY));
             return true;
         }
+        String name = command.getName().toLowerCase(Locale.ROOT);
+        if (name.equals("back")) {
+            if (!player.hasPermission("mariiytpa.back") && !player.hasPermission("mariiytpa.use")) {
+                service.platform().sendError(player.getUniqueId(), TpaKeys.CMD_NO_PERMISSION);
+                return true;
+            }
+            backService.back(player.getUniqueId());
+            return true;
+        }
         if (!player.hasPermission("mariiytpa.use")) {
             service.platform().sendError(player.getUniqueId(), TpaKeys.CMD_NO_PERMISSION);
             return true;
         }
-        String name = command.getName().toLowerCase(Locale.ROOT);
         return switch (name) {
             case "tpa" -> request(player, args, TpaKind.TO);
             case "tpahere" -> request(player, args, TpaKind.HERE);
